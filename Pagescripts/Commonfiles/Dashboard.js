@@ -1,20 +1,20 @@
 ﻿$(document).ready(function () {
-
+    var currentTime = new Date();
+    // First Date Of the month 
+    var startDateFrom = new Date(currentTime.getFullYear(), currentTime.getMonth(), 1);
+    $("#txtfromdate").datepicker().datepicker("setDate", startDateFrom);
+    $("#txttodate").datepicker().datepicker("setDate", currentTime);
     $('#wrapper').addClass("enlarged forced");
     $('ul').removeAttr("style");
     loadtotal_profit();
-    loadlessstock();
-   // Loadoutofstock();
-   // Loadfreq();
-  //  Loadfreqproduct();
+  
+
 })
 
 function loadtotal_profit() {
     var data = {
-        FromDate: null,
-        ToDate: null,
-        Driver_Name: null
-
+        fdate: $("#txtfromdate").val(),
+        tdate: $("#txttodate").val()
     }
     uri = "/Dashboard/Gettotalprofit";
     $.ajax({
@@ -29,20 +29,49 @@ function loadtotal_profit() {
                 $("#lbltotalsales").html(item.totalsales)
                 $("#lbltotalpurchase").html(item.totalpurchase)
                 $("#lbltotalexpense").html(item.totalexpense)
-                $("#lblsuppliercount").html(item.suppliercount)
-                $("#lblsalescount").html(item.dealercount)
+              
                 $("#lblprofit").html(item.profit)
-                var rows = "<tr>"
-        + "<td>" + item.SNo + "</td>"
-        + "<td>" + item.PartNumber + "</td>"
-        + "<td>" + item.Partdescription + "</td>"
-        + "<td>" + item.PartCategory + "</td>"
+            })
+        },
+        error: function (response) {
+            var parsed = JSON.parse(response.responseText);
+            Error_Msg(parsed.Message);
+            d.resolve();
+        },
+        failure: function (response) {
+            var parsed = JSON.parse(response.responseText);
+            Error_Msg(parsed.Message);
+            d.resolve();
+        }
 
-        + "<td>" + item.BinLocation + "</td>"
-        + "<td>" + parseInt(item.CurrentStock) + "</td>"
-        + "</tr>";
-                $('#gvfreqqty tbody').append(rows);
+    });
+    loadbankpayments()
+    loadcashpayments()
+    return false
+
+}
+function loadbankpayments() {
+    var data = {
+        fromdate: $("#txtfromdate").val(),
+        todate: $("#txttodate").val()
+    }
+   
+    $.ajax({
+        url: "/Dashboard/GetBanktransactions",
+        data: JSON.stringify(data),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            $('#tblbanktransaction tbody').empty();
+            let row = '';
+            let total = 0;
+            $.each(data, function (i, v) {
+                row = '';
+                row = `<tr><td>` + v.sno + `</td><td>` + v.entrydate + `</td> <td> By ` + v.name + ` For invoiceno `+v.invoiceno+` </td> <td>` + v.amount + `</td></tr>`
+                $('#tblbanktransaction tbody').append(row);
             });
+           
         },
         error: function (response) {
             var parsed = JSON.parse(response.responseText);
@@ -59,33 +88,28 @@ function loadtotal_profit() {
     return false
 
 }
-function loadlessstock() {
+function loadcashpayments() {
     var data = {
-        FromDate: null,
-        ToDate: null,
-        Driver_Name: null
-
+        fromdate: $("#txtfromdate").val(),
+        todate: $("#txttodate").val()
     }
-    uri = "/Dashboard/Getlessstock";
+
     $.ajax({
-        url: uri,
+        url: "/Dashboard/GetCashtransactions",
         data: JSON.stringify(data),
         type: "POST",
         contentType: "application/json;charset=utf-8",
         dataType: "json",
         success: function (data) {
-
-            $.each(data, function (i, item) {
-                var rows = '<a>' +
-                     '<div class="inbox-item">' +
-                        '<div class="inbox-item-img"><h5>' + item.SNo + '</h5></div>' +
-                        '<p class="inbox-item-author"><span class="text-danger text-dark">' + item.sparename + '</span></p>' +
-                        '<p class="inbox-item-text">' + (item.description == '' ? 'no description' : item.description) + '</p>' +
-                        '<p class="inbox-item-date"><span class="avatar-sm-box bg-pink">' + parseInt(item.availableqty) + '</span></p>' +
-                    '</div>' +
-                     '</a>';
-                $('#divfreq').append(rows);
+            $('#tblcashtransaction tbody').empty();
+            let row = '';
+            let total = 0;
+            $.each(data, function (i, v) {
+                row = '';
+                row = `<tr><td>` + v.sno + `</td><td>` + v.entrydate + `</td> <td> By ` + v.name + ` For invoiceno ` + v.invoiceno + ` </td> <td>` + v.amount + `</td></tr>`
+                $('#tblcashtransaction tbody').append(row);
             });
+
         },
         error: function (response) {
             var parsed = JSON.parse(response.responseText);

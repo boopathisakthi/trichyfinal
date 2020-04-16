@@ -3,37 +3,20 @@
 <div id="sidebar-menu">
     <ul>
        
-
         <li class="has_sub">
             <a href='@Url.Action("Dashboard", "Login")' class="waves-effect"><i class="mdi mdi-view-dashboard"></i> <span> Dashboard </span> </a>
         </li>
+      
         @if (Model.Logintype == "Stock")
         {
           
-           
-           
-
-
-
             <li class="has_sub">
                 <a href='@Url.Action("Index", "Bill")'><i class="fa fa-bold"></i> <span> Bill Entry </span> </a>
             </li>
-               
-            <li class="has_sub">
-
-                <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-settings"></i><span> Settings </span> <span class="menu-arrow"></span></a>
-                <ul class="list-unstyled">
-                    <li><a href='@Url.Action("Index", "User")'>User Creation</a></li>
-                    <li><a href='@Url.Action("Index", "Company")'>Company Details</a></li>
-                </ul>  
-
-            </li>
-
-
-
         }
         else
         {
+           
             <li class="has_sub">
 
                 <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-chart-arc"></i><span> Create </span> <span class="menu-arrow"></span></a>
@@ -67,11 +50,13 @@
                     <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-file-document"></i><span> Report </span> <span class="menu-arrow"></span></a>
                     <ul class="list-unstyled">
                         <li><a href='@Url.Action("StockReport", "StockReport")'>Current Stock </a></li>
+                        <li><a href='@Url.Action("index", "Spare_Purchase_Sales")'>Purchase Sales Stock </a></li>
+                        <li><a href='@Url.Action("index", "Sparesale")'>Sparesales</a></li>
                         <li><a href='@Url.Action("index", "SalesReport")'>Sales </a></li>
                         <li><a href='@Url.Action("index", "PurchaseReport")'>Purchase </a></li>
                         <li><a href='@Url.Action("index", "CustomerBalance")'>DealerBalance</a></li>
                         <li><a href='@Url.Action("index", "SupplierBalance")'>SupplierBalance</a></li>
-                        <li><a href='@Url.Action("index", "Sparesale")'>Sparesales</a></li>
+                    
                         <li><a href='@Url.Action("index", "DayBookReport")'>Day Book</a></li>
                     </ul>
                 </li>

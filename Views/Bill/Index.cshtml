@@ -74,8 +74,6 @@
         </div>
     </div>
     <div class="col-xl-12 salesentry">
-
-
         <input type="hidden" id="hfimg" />
         <div class="row">
 
@@ -97,8 +95,8 @@
 
                                             <label class="control-label">Invoiceno:</label>
                                             <div class="input-group">
-                                                <h3><label id="lblbillno" class="text-purple m-b-0"></label></h3>
-
+                                                @*<h3><label id="lblbillno" class="text-purple m-b-0"></label></h3>*@
+                                                  <input type="text" onblur="getinvoiceno()" id="txtinvoiceno" class="form-control" />
                                             </div>
                                             
                                         </div>
@@ -273,7 +271,7 @@
                                                     <td>
                                                         <select class="form-control ddltype">
                                                             <option value="Cash">Cash</option>
-                                                            <option value="Card">Card</option>
+                                                            <option value="Bank">Bank</option>
                                                             <option value="UPI">UPI</option>
                                                         </select>
                                                         <input type="hidden" class="hfpaymentid">
@@ -344,8 +342,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 
 </div>

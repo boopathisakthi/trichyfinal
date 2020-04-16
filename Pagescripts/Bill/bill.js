@@ -7,6 +7,12 @@
 })
 function saveprocess() {
     try {
+
+        if ($('#txtinvoiceno').val() == "0")
+        {
+            toastr.error('invalid invoice no unable to process');
+            return false;
+        }
         var Deatil = [];
        
         $('#detailsTable tbody tr').each(function (index, ele) {
@@ -41,7 +47,7 @@ function saveprocess() {
                     billno: 'sales',
                     type: 'customer',
                     typeid: $('#ddlcustomer').val(),
-                    trans_no: $('#lblbillno').text()
+                    trans_no: $('#txtinvoiceno').val()
                 }
                 Payment.push(detail);
                 total = parseFloat(total) + parseFloat($('.payamount', this).val());
@@ -81,15 +87,21 @@ function saveprocess() {
             description: $('#txtdescription').val(),
             customersysid: $('#ddlcustomer').val(),
             total: $('#txttotal').val(),
-            invoiceno: $('#lblbillno').text(),
+          
             taxtype: $('#ddltaxtype').val(),
             roundoff: $("#txtroundoff").val(),
             roundoff_type: $("#ddlroundoff_type").val(),
             SalesDeatils: Deatil,
             PaymentDetails: Payment
         }
-
-
+        if ($('#hfsysid').val())
+        {
+            data.invoiceno=$('#txtinvoiceno').val()
+        }
+        else
+        {
+            data.invoiceno = 'INV' + $('#txtinvoiceno').val()
+        }
 
         $.ajax({
             url: "/Bill/save",
@@ -126,24 +138,24 @@ function saveprocess() {
 function getinvoiceno() {
 
     $.ajax({
-        url: '/Bill/GetInvoiceNo',
-       // data: "{ 'billno':"+ $('#txtinvoiceno').val()+"}",
-        dataType: "json",
-        type: "POST",
+         url: '/Bill/GetInvoiceNo',
+         data: "{ 'billno':"+ $('#txtinvoiceno').val()+"}",
+         dataType: "json",
+         type: "POST",
         contentType: "application/json; charset=utf-8",
 
         success: function (res) {
             
-             $("#lblbillno").text("BE"+(parseInt(res.Id)+1))
-            //if(res.Id==0)
-            //{
-            //    toastr.success('invoice no valid')
-            //}
-            //else
-            //{
-            //    toastr.error('invoice no invalid')
-            //    $('#txtinvoiceno').val('0')
-            //}
+            // $("#lblbillno").text("BE"+(parseInt(res.Id)+1))
+            if(res.Id==0)
+            {
+                toastr.success('invoice no valid')
+            }
+            else
+            {
+                toastr.error('invoice no invalid')
+                $('#txtinvoiceno').val('0')
+            }
 
 
 
@@ -189,8 +201,8 @@ function getbyID(SysId) {
 
                 $("#hfsysid").val(res.result.sysid);
                 $("#txtentrydate").val(res.result.entrydate);
-                $("#lblbillno").text(res.result.invoiceno)
-              
+               // $("#lblbillno").text(res.result.invoiceno)
+                $('#txtinvoiceno').val(res.result.invoiceno).attr("disabled", "disabled");
                 $('#ddltaxtype').val(res.result.taxtype);
                 $("#txtdescription").val(res.result.description);
                 $("#txttotal").val(res.result.total);
@@ -355,7 +367,7 @@ function show() {
     var currentTime = new Date();
     $("#txtentrydate").datepicker().datepicker("setDate", currentTime);
     Drobdownbindsearch($('#ddlcustomer'), '/Customer/Getcustomerdropdown');
-    getinvoiceno();
+   // getinvoiceno();
     
 }
 function closedata() {
@@ -666,12 +678,12 @@ function Cal_Amount() {
     $('.gstdetails').append(taxdesign5gst + taxdesign12gst + taxdesign18gst + taxdesign28gst);
 
     if ($('#ddltaxtype').val() == 'Exclusive') {
-        $('#txt_taxable_amout').val(total)
+        $('#txt_taxable_amout').val(parseFloat(total).toFixed(2))
         let sum = total + taxamount5gst + taxamount12gst + taxamount18gst + taxamount28gst;
         $('#txttotal').val(parseFloat(sum).toFixed(2));
     }
     else {
-        $('#txt_taxable_amout').val(total - (taxamount5gst + taxamount12gst + taxamount18gst + taxamount28gst))
+        $('#txt_taxable_amout').val(parseFloat(total - (taxamount5gst + taxamount12gst + taxamount18gst + taxamount28gst)).toFixed(2))
         let sum = total;
         $('#txttotal').val(parseFloat(sum).toFixed(2));
     }
@@ -713,19 +725,16 @@ function cleardata() {
  
     $('#tblpayment tbody').find("tr:gt()").remove();
     $('#tblpayment tbody tr').each(function (i, e) {
-
-
         $('.payamount', this).val('0');
         $('.description', this).val('');
         $('.hfpaymentid', this).val('');
-
-
     })
    
     $('#txtpayamount').val('0');
     $('#lblbalance').val('0');
     $('#txt_taxable_amout').val('');
-    getinvoiceno();
+    //getinvoiceno();
+    $('#txtinvoiceno').removeAttr("disabled").val("0");
 }
 function getsparedetail(ctrl) {
     let url = '';

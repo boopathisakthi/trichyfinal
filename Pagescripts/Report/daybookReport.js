@@ -7,7 +7,7 @@
 
     $("#txtfromdate").datepicker().datepicker("setDate", currentTime);
     $("#txttodate").datepicker().datepicker("setDate", currentTime);
-    LoadData();
+    //LoadData();
 })
 
 function LoadData() {
@@ -24,7 +24,7 @@ function LoadData() {
        
     }
 
-    Parameterbindwithviewdata("#Gvlist", "/DayBookReport/Getlist", data, FilterParameter);
+    Parameterbindwithfordaybookviewdata("#Gvlist", "/DayBookReport/Getlist", data, FilterParameter);
 }
 
 function getdetails(sysid) {
@@ -129,5 +129,47 @@ function getdetails(sysid) {
 
     }
 
+}
+
+function Parameterbindwithfordaybookviewdata(tablename, uri, data, FilterParameter) {
+
+    var datacount = data.length;
+    for (i = 0; i < datacount; i++) {
+        data[i] = eval({ "data": data[i], "name": data[i], "autoWidth": true });
+    }
+
+    data[datacount] = eval({
+        "data": "sysid", "width": "50px", "render": function (data) {
+            return '<a style="padding:1px;" class="btn btn-icon waves-effect btn-white m-b-5" href="#" onclick="return getdetails(\'' + data + '\')"><i style="color:teal;" class="far fa-eye"></i>  </a>';
+        }
+    });
+
+    $(tablename).dataTable().fnDestroy();
+
+    $(tablename).DataTable({
+        "ajax": {
+            "url": uri,
+            "type": "POST",
+            "datatype": "json",
+            "data": FilterParameter
+        },
+        "columns": data,
+        "serverSide": "true",
+        "order": [0, "desc"],
+        "dom": '<"top">rt<"bottom"<"row"<"col-md-2"><"col-md-3"><"col-md-4">>><"clear">',
+        "processing": "true",
+        "language": {
+            "processing": "processing ... please wait"
+        }
+    });
+    oTable = $(tablename).DataTable();
+    $('#btnSearch').click(function () {
+        //Apply search for Employee Name // DataTable column index 0
+        oTable.columns(0).search($('#searchby').val().trim());
+        //Apply search for Country // DataTable column index 3
+        oTable.columns(3).search($('#searchtext').val().trim());
+        //hit search on server
+        oTable.draw();
+    });
 }
 

@@ -106,9 +106,11 @@ function saveprocess() {
                 if (result.Status == true) {
                     toastr.success(result.Message);
                    // var win = window.open('http://localhost:26376/Report/SalesReport/salereport.aspx?sysid=' + result.Id + '&type=al', '_blank');
-                    getinvoiceno()
+                 
                     // LoadData();
                     cleardata();
+                    getinvoiceno()
+
                 }
                 else {
                     toastr.error(result.Message);

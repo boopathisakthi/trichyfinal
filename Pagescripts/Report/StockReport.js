@@ -8,8 +8,8 @@ function LoadData() {
     data[1] = "sparename";
     data[2] = "hsncode";
     data[3] = "taxname";
-    data[4] = "openingstock";
-    data[5] = "stockinhand";
+    //data[4] = "openingstock";
+    data[4] = "stockinhand";
 
     bindReportdata("#Gvlist", "/StockReport/Getlist", data);
 }

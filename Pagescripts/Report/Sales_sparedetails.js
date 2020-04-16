@@ -83,11 +83,11 @@ function getdetails(sysid) {
         type: "POST",
        
         success: function (res) {
-            //alert(JSON.stringify(res))
+           
             $("#detailsTable tbody").empty();
             $.each(res.data, function (i, v) {
                 let sno = i + 1;
-                let row = `<tr><td>` + sno + `</td> <td>` + v.name + `</td><td>` + v.sparename + `</td><td>` + v.hsncode + `</td><td>` + v.qty + `</td></tr>`;
+                let row = `<tr><td>` + sno + `</td><td>` + v.entrydate + `</td><td>` + v.invoiceno + `</td> <td>` + v.name + `</td><td>` + v.sparename + `</td><td>` + v.hsncode + `</td><td>` + v.qty + `</td></tr>`;
                 $("#detailsTable tbody").append(row);
             })
             $('#con-close-modal1').modal('show')
