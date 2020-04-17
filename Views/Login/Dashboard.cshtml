@@ -43,7 +43,7 @@
 
 
         <button type="button" onclick="loadtotal_profit()" style="margin-top: 25px;"
-                id="btnSearch" class="btn waves-effect waves-light btn-info">
+                id="btnloaddata" class="btn waves-effect waves-light btn-info">
             <i class="fas fa-search"></i>
         </button>
 
@@ -101,7 +101,7 @@
 </div>
 
 <div class="row">
-  <br />
+ 
     <div class="col-md-6">
         <div class="card-box">
            
@@ -155,6 +155,37 @@
     </div>
    
 
+</div>
+<div class="row card">
+    <div class="row">
+        <div class="col-md-8 mt-4">
+        </div>
+        <div class="col-md-4 mt-4">
+            <div class="input-group">
+
+                <input type="text" id="searchtext" name="example-input1-group2" class="form-control" placeholder="Search...">
+                <span class="input-group-prepend">
+                    <button type="button" id="btnspareseacrh" onclick="loadprofitloss()" class="btn waves-effect waves-light btn-info"><i class="fas fa-search"></i></button>
+                </span>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-sm-12 table-responsive">
+        <table id="Gvlistprofitloss" class="table m-0 text-center table-colored-bordered table-bordered-info table-sm" style="border-collapse: collapse; border-spacing: 0; width:100%;">
+            <thead>
+                <tr>
+                    <th>S.no</th>
+                    <th>Spare Name</th>
+                    <th>Purchase Qty</th>
+                    <th>Sales Qty</th>
+                    <th>Purchase Amount</th>
+                    <th>Sales Amount</th>
+                    <th>Profit Amount</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 </div>
 
 

@@ -62,9 +62,9 @@ function Parameterbindwithfordoubleviewdata(tablename, uri, data, FilterParamete
     oTable = $(tablename).DataTable();
     $('#btnSearch').click(function () {
         //Apply search for Employee Name // DataTable column index 0
-        oTable.columns(0).search($('#searchby').val().trim());
+        oTable.columns(0).search('sparename');
         //Apply search for Country // DataTable column index 3
-        oTable.columns(3).search($('#searchtext').val().trim());
+        oTable.columns(3).search($('#searchtext').val());
         //hit search on server
         oTable.draw();
     });

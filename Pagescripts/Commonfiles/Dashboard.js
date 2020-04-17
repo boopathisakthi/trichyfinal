@@ -7,6 +7,7 @@
     $('#wrapper').addClass("enlarged forced");
     $('ul').removeAttr("style");
     loadtotal_profit();
+ 
   
 
 })
@@ -47,6 +48,7 @@ function loadtotal_profit() {
     });
     loadbankpayments()
     loadcashpayments()
+    loadprofitloss()
     return false
 
 }
@@ -126,144 +128,58 @@ function loadcashpayments() {
     return false
 
 }
-function Loadoutofstock() {
+
+function loadprofitloss() {
+    var FilterParameter = {
+        fromdate: $("#txtfromdate").val(),
+        todate: $("#txttodate").val()
+
+    }
     var data = [];
-    data[0] = "SNo";
-    data[1] = "PartNumber";
-    data[2] = "Partdescription";
-    data[3] = "PartCategory";
-    data[4] = "BinLocation";
-    data[5] = "CurrentStock";
-    bindReportdata("#gvlessqty", "/Dashboard/Getlessqtylist", data);
+    data[0] = 'sno';
+    data[1] = 'sparename';
+    data[2] = 'purchaseqty';
+    data[3] = 'salesqty';
+    data[4] = 'purchaseamount';
+    data[5] = 'salesamount';
+    data[6] = 'profit'
+    Parameterbindwithoutview($('#Gvlistprofitloss'), "/Dashboard/Getsparebased_profit_loss", data, FilterParameter)
 }
-function Loadoutofstock1() {
-    var data = {
-        FromDate: null,
-        ToDate: null,
-        Driver_Name: null
 
+function Parameterbindwithoutview(tablename, uri, data, FilterParameter) {
+
+    var datacount = data.length;
+    for (i = 0; i < datacount; i++) {
+        data[i] = eval({ "data": data[i], "name": data[i], "autoWidth": true });
     }
-    uri = "/Dashboard/Getlessqtylist";
-    $.ajax({
-        url: uri,
-        data: JSON.stringify(data),
-        type: "POST",
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        success: function (data) {
 
-            $.each(data, function (i, item) {
-                var rows = "<tr>"
-        + "<td>" + item.SNo + "</td>"
-        + "<td>" + item.PartNumber + "</td>"
-        + "<td>" + item.Partdescription + "</td>"
-        + "<td>" + item.PartCategory + "</td>"
+  
 
-        + "<td>" + item.BinLocation + "</td>"
-        + "<td>" + item.CurrentStock + "</td>"
-        + "</tr>";
-                $('#gvlessqty tbody').append(rows);
-            });
+    $(tablename).dataTable().fnDestroy();
+
+    $(tablename).DataTable({
+        "ajax": {
+            "url": uri,
+            "type": "POST",
+            "datatype": "json",
+            "data": FilterParameter
         },
-        error: function (response) {
-            var parsed = JSON.parse(response.responseText);
-            Error_Msg(parsed.Message);
-            d.resolve();
-        },
-        failure: function (response) {
-            var parsed = JSON.parse(response.responseText);
-            Error_Msg(parsed.Message);
-            d.resolve();
+        "columns": data,
+        "serverSide": "true",
+        "order": [0, "desc"],
+        "dom": '<"top">rt<"bottom"<"row"<"col-md-2"l><"col-md-3"i><"col-md-4"p>>><"clear">',
+        "processing": "true",
+        "language": {
+            "processing": "processing ... please wait"
         }
-
     });
-    return false
-
-}
-function Loadfreq() {
-    var data = {
-        FromDate: null,
-        ToDate: null,
-        Driver_Name: null
-
-    }
-    uri = "/Dashboard/GetFreqqtylist";
-    $.ajax({
-        url: uri,
-        data: JSON.stringify(data),
-        type: "POST",
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        success: function (data) {
-
-            $.each(data, function (i, item) {
-                var rows = "<tr>"
-        + "<td>" + item.SNo + "</td>"
-        + "<td>" + item.PartNumber + "</td>"
-        + "<td>" + item.Partdescription + "</td>"
-        + "<td>" + item.PartCategory + "</td>"
-
-        + "<td>" + item.BinLocation + "</td>"
-        + "<td>" +parseInt(item.CurrentStock) + "</td>"
-        + "</tr>";
-                $('#gvfreqqty tbody').append(rows);
-            });
-        },
-        error: function (response) {
-            var parsed = JSON.parse(response.responseText);
-            Error_Msg(parsed.Message);
-            d.resolve();
-        },
-        failure: function (response) {
-            var parsed = JSON.parse(response.responseText);
-            Error_Msg(parsed.Message);
-            d.resolve();
-        }
-
+    oTable = $(tablename).DataTable();
+    $('#btnspareseacrh').click(function () {
+        //Apply search for Employee Name // DataTable column index 0
+        oTable.columns(0).search('sparename');
+        //Apply search for Country // DataTable column index 3
+        oTable.columns(3).search($('#searchtext').val());
+        //hit search on server
+        oTable.draw();
     });
-    return false
-
-}
-function Loadfreqproduct() {
-    var data = {
-        FromDate: null,
-        ToDate: null,
-        Driver_Name: null
-
-    }
-    uri = "/Dashboard/GetFreqqtylist";
-    $.ajax({
-        url: uri,
-        data: JSON.stringify(data),
-        type: "POST",
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        success: function (data) {
-
-            $.each(data, function (i, item) {
-                var rows ='<a>' +
-                     '<div class="inbox-item">' +
-                        '<div class="inbox-item-img"><h5>' + item.SNo + '</h5></div>' +
-                        '<p class="inbox-item-author"><span class="text-danger text-dark">' + item.PartNumber + '</span>~<span class="text-success text-right">' + item.PartCategory + '</span></p>' +
-                        '<p class="inbox-item-text">' + item.Partdescription + '</p>' +
-                        '<p class="inbox-item-date"><span class="avatar-sm-box bg-pink">' + parseInt(item.CurrentStock) + '</span></p>' +
-                    '</div>' +
-                     '</a>';
-                $('#divfreq').append(rows);
-            });
-        },
-        error: function (response) {
-            var parsed = JSON.parse(response.responseText);
-            Error_Msg(parsed.Message);
-            d.resolve();
-        },
-        failure: function (response) {
-            var parsed = JSON.parse(response.responseText);
-            Error_Msg(parsed.Message);
-            d.resolve();
-        }
-
-    });
-    return false
-
 }
